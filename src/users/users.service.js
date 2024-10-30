@@ -1,4 +1,4 @@
-import Boom from '@hapi/boom'
+import User from './users.model'
 
 /**
  * Get all users.
@@ -10,11 +10,21 @@ export function getAllUsers() {
 }
 
 /**
- * Get a user.
+ * Get a user with pass.
+ *
+ * @param   {Object}  query
+ * @returns {Promise}
+ */
+export function getUserWithPass(query) {
+  return User.findOne({ ...query }).select('+password')
+}
+
+/**
+ * Get a user by ID.
  *
  * @param   {Number|String}  id
  * @returns {Promise}
  */
-export function getUser(id) {
-  returnid
+export function getUserById(id) {
+  return User.find({ _id: id })
 }
