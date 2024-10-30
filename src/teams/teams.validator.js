@@ -2,23 +2,22 @@ import Joi from '@hapi/joi'
 import Boom from '@hapi/boom'
 
 import validate from '../utils/validate'
-import * as userService from './users.service'
+import * as teamService from './teams.service'
 
 // Validation schema
 const schema = Joi.object({
-  username: Joi.string().label('username').required(),
-  password: Joi.string().label('password').required()
+  name: Joi.string().label('name').required()
 })
 
 /**
- * Validate create/update user request.
+ * Validate create/update team request.
  *
  * @param   {Object}   req  Request object
  * @param   {Object}   res  Response object
  * @param   {Function} next Next middleware function
  * @returns {Promise}
  */
-async function userValidator(req, res, next) {
+async function teamValidator(req, _, next) {
   try {
     await validate(req.body, schema)
 
@@ -29,20 +28,20 @@ async function userValidator(req, res, next) {
 }
 
 /**
- * Validate user's existence.
+ * Validate team's existence.
  *
  * @param   {Object}   req  Request object
  * @param   {Object}   res  Response object
  * @param   {Function} next Next middleware function
  * @returns {Promise}
  */
-async function findUserValidator(req, res, next) {
+async function findTeamValidator(req, res, next) {
   try {
-    const user = await userService.getUser(req.params.id)
+    const team = await teamService.getTeamById(req.params.id)
 
-    if (!user?._id) throw Boom.notFound('Can not found the user.')
+    if (!team?._id) throw Boom.notFound('Can not found the team.')
 
-    req.other = user
+    req.team = team
 
     next()
   } catch (err) {
@@ -50,4 +49,4 @@ async function findUserValidator(req, res, next) {
   }
 }
 
-export { findUserValidator, userValidator }
+export { findTeamValidator, teamValidator }

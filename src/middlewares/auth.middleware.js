@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken'
 import Boom from '@hapi/boom'
 
 import { APP_SECRET } from '../app/config'
-import { getUser } from '../users/users.service'
+import { getUserById } from '../users/users.service'
 
 /**
  * Checking Auth
@@ -11,29 +11,33 @@ import { getUser } from '../users/users.service'
  * @param  {object}   res  Response
  * @param  {function} next Enable the process to go on
  */
-export const auth = async (req, res, next) => {
-  const authorizationHeader = req.headers['authorization']
-
-  if (!authorizationHeader) throw next(Boom.unauthorized('No authorization header provided'))
-
-  const token = authorizationHeader.split(' ')[1]
-
-  if (!token) throw next(Boom.unauthorized('No token provided'))
-
-  let userID
-
+export const auth = async (req, _, next) => {
   try {
-    const decoded = jwt.verify(token, APP_SECRET)
-    userID = decoded.userID
+    const authorizationHeader = req.headers['authorization']
+
+    if (!authorizationHeader) throw Boom.unauthorized('No authorization header provided')
+
+    const [scheme, token] = authorizationHeader.split(' ')
+
+    if (scheme !== 'Bearer' || !token)
+      throw Boom.unauthorized('Invalid authorization format. Token must be a Bearer token.')
+
+    let decoded
+
+    try {
+      decoded = jwt.verify(token, APP_SECRET)
+    } catch (err) {
+      throw Boom.unauthorized('Invalid or expired token.')
+    }
+
+    const user = await getUserById(decoded.id)
+
+    if (!user?._id) throw Boom.unauthorized('User not found')
+
+    req.user = user
+
+    next()
   } catch (err) {
-    throw next(Boom.unauthorized('Invalid or expired token'))
+    next(err)
   }
-
-  const user = await getUser(userID)
-
-  if (!user || !user.name) throw next(Boom.unauthorized('User not found'))
-
-  req.user = user
-  
-  next()
 }

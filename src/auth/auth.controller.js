@@ -24,7 +24,7 @@ export async function login(req, res, next) {
 
     if (!isMatch) throw Boom.unauthorized('Incorrect password')
 
-    const token = jwt.sign({ username: user.username }, APP_SECRET, { expiresIn: '8d' })
+    const token = jwt.sign({ id: user._id }, APP_SECRET, { expiresIn: '8d' })
 
     user = await getUserById(user._id)
 

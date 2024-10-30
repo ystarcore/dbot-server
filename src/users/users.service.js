@@ -26,5 +26,5 @@ export function getUserWithPass(query) {
  * @returns {Promise}
  */
 export function getUserById(id) {
-  return User.find({ _id: id })
+  return User.findById(id)
 }

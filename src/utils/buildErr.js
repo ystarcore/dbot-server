@@ -1,4 +1,4 @@
-import HttpStatus from 'http-status-codes';
+import HttpStatus from 'http-status-codes'
 
 /**
  * Build error response for validation errors.
@@ -14,13 +14,13 @@ function buildError(err) {
       message: HttpStatus.getStatusText(HttpStatus.BAD_REQUEST),
       details:
         err.details &&
-        err.details.map(err => {
+        err.details.map((err) => {
           return {
             message: err.message,
             param: err.path.join('.')
-          };
+          }
         })
-    };
+    }
   }
 
   // HTTP errors
@@ -28,14 +28,14 @@ function buildError(err) {
     return {
       code: err.output.statusCode,
       message: err.output.payload.message || err.output.payload.error
-    };
+    }
   }
 
   // Return INTERNAL_SERVER_ERROR for all other cases
   return {
     code: HttpStatus.INTERNAL_SERVER_ERROR,
     message: HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR)
-  };
+  }
 }
 
-export default buildError;
+export default buildError
