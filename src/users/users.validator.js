@@ -38,7 +38,7 @@ async function userValidator(req, res, next) {
  */
 async function findUserValidator(req, res, next) {
   try {
-    const user = await userService.getUser(req.params.id)
+    const user = await userService.getUser(req.params.userId)
 
     if (!user?._id) throw Boom.notFound('Can not found the user.')
 

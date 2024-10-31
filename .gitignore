@@ -42,3 +42,4 @@ coverage
 **/.history
 package-lock.json
 yarn.lock
+/uploads

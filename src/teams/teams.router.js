@@ -9,11 +9,11 @@ const router = express.Router()
 
 router.get('/', fetchAllTeams)
 
-router.get('/:id', findTeamValidator, fetchTeam)
+router.get('/:teamId', findTeamValidator, fetchTeam)
 
 router.post('/', auth, teamValidator, createTeam)
 
-router.put('/:id', auth, findTeamValidator, teamValidator, editTeam)
+router.put('/:teamId', auth, findTeamValidator, teamValidator, editTeam)
 
 router.delete('/', auth, removeTeams)
 

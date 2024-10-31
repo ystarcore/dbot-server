@@ -56,10 +56,10 @@ export async function editTeam(req, res, next) {
   try {
     const {
       body: data,
-      params: { id }
+      params: { teamId }
     } = req
 
-    const team = await updateTeamById(id, data)
+    const team = await updateTeamById(teamId, data)
 
     res.json({ team })
   } catch (err) {

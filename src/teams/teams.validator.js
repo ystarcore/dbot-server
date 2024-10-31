@@ -37,7 +37,7 @@ async function teamValidator(req, _, next) {
  */
 async function findTeamValidator(req, res, next) {
   try {
-    const team = await teamService.getTeamById(req.params.id)
+    const team = await teamService.getTeamById(req.params.teamId)
 
     if (!team?._id) throw Boom.notFound('Can not found the team.')
 
