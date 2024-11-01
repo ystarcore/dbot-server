@@ -1,4 +1,8 @@
-import { addClient, deleteClientsByIds, getAllClients, updateClientById } from './clients.service'
+import path from 'path'
+import moment from 'moment'
+import Boom from '@hapi/boom'
+import fs from 'fs'
+import { addClient, deleteClientsByIds } from './clients.service'
 
 /**
  * Get a client.
@@ -7,8 +11,26 @@ import { addClient, deleteClientsByIds, getAllClients, updateClientById } from '
  * @param {Object} res
  * @param {Function} next
  */
-export function fetchClient(req, res, _) {
-  res.send({ client: req.client })
+export function fetchClient(req, res, next) {
+  const {
+    client: {
+      filename,
+      createdAt,
+      teamId: { name }
+    }
+  } = req
+
+  const filePath = path.resolve('uploads', filename)
+
+  const fileName = `${name}-${moment(createdAt).format('YYYYMMDDHHmm')}.xlsx`
+
+  try {
+    if (!fs.existsSync(filePath)) return Boom.notFound('File not found')
+
+    res.download(filePath, fileName)
+  } catch (err) {
+    next(err)
+  }
 }
 
 /**

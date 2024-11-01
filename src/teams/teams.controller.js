@@ -1,4 +1,4 @@
-import { addTeam, deleteTeamsByIds, getAllTeams, updateTeamById } from './teams.service'
+import { addTeam, deleteTeamsByIds, getAllTeams, getAllTeamsWithClient, updateTeamById } from './teams.service'
 
 /**
  * Get all teams.
@@ -10,6 +10,23 @@ import { addTeam, deleteTeamsByIds, getAllTeams, updateTeamById } from './teams.
 export async function fetchAllTeams(_, res, next) {
   try {
     const teams = await getAllTeams()
+
+    res.json({ teams })
+  } catch (err) {
+    next(err)
+  }
+}
+
+/**
+ * Get all teams.
+ *
+ * @param {Object} req
+ * @param {Object} res
+ * @param {Function} next
+ */
+export async function fetchAllTeamsWithClient(_, res, next) {
+  try {
+    const teams = await getAllTeamsWithClient()
 
     res.json({ teams })
   } catch (err) {
@@ -60,6 +77,23 @@ export async function editTeam(req, res, next) {
     } = req
 
     const team = await updateTeamById(teamId, data)
+
+    res.json({ team })
+  } catch (err) {
+    next(err)
+  }
+}
+
+/**
+ * Remove a team.
+ *
+ * @param {Object} req
+ * @param {Object} res
+ * @param {Function} next
+ */
+export async function removeTeam(req, res, next) {
+  try {
+    const team = await deleteTeamsByIds(req.params.teamId)
 
     res.json({ team })
   } catch (err) {

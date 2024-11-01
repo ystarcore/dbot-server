@@ -10,6 +10,54 @@ export function getAllTeams() {
 }
 
 /**
+ * Get all team.
+ *
+ * @returns {Promise}
+ */
+export async function getAllTeamsWithClient() {
+  try {
+    const teams = await Team.aggregate([
+      {
+        $lookup: {
+          from: 'clients',
+          let: { teamId: '$_id' },
+          pipeline: [
+            // Match the team ID
+            { $match: { $expr: { $eq: ['$teamId', '$$teamId'] } } },
+            // Sort by createdAt in descending order to get the latest client first
+            { $sort: { createdAt: -1 } }
+          ],
+          as: 'clientsData'
+        }
+      },
+      {
+        // Get the first (latest) client or null if no clients are present
+        $addFields: {
+          latestClient: { $arrayElemAt: ['$clientsData', 0] }
+        }
+      },
+      {
+        $project: {
+          _id: 1,
+          name: 1,
+          createdAt: 1,
+          clientId: { $ifNull: ['$latestClient._id', null] },
+          filename: { $ifNull: ['$latestClient.filename', null] },
+          updatedAt: { $ifNull: ['$latestClient.createdAt', null] }
+        }
+      },
+      {
+        $sort: { createdAt: -1 } // Sort by the 'name' field in ascending order
+      }
+    ])
+
+    return teams
+  } catch (err) {
+    throw err
+  }
+}
+
+/**
  * Get teams.
  *
  * @param   {Object}  query

@@ -3,7 +3,8 @@ import path from 'path'
 
 const storage = multer.diskStorage({
   destination: './uploads/',
-  filename: (_, file, cb) => {
+  filename: (info, file, cb) => {
+    console.log('sdfsfd', info.team, file)
     cb(null, `${Date.now()}-${file.originalname}`)
   }
 })

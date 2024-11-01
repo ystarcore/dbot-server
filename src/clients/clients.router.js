@@ -12,6 +12,6 @@ const router = express.Router()
 
 router.get('/:clientId', findClientValidator, fetchClient)
 
-router.post('/:teamId', auth, upload, findTeamValidator, createClient)
+router.post('/:teamId', auth, findTeamValidator, upload, createClient)
 
 export default router

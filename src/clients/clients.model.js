@@ -14,7 +14,7 @@ const clientSchema = new mongoose.Schema({
   },
   teamId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Teem'
+    ref: 'Team'
   },
   createdAt: {
     type: Date,

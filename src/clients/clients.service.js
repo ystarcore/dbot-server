@@ -17,7 +17,7 @@ export function getClients(query) {
  * @returns {Promise}
  */
 export function getClientById(id) {
-  return Client.findById({ _id: id })
+  return Client.findById({ _id: id }).populate('teamId')
 }
 
 /**

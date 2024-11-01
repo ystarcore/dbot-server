@@ -9,6 +9,7 @@ import mongoose from 'mongoose'
 import routes from './app/router'
 import * as errorHandler from './middlewares/error.middleware'
 import { APP_HOST, APP_PORT, MONGO_URI } from './app/config'
+import { download } from './middlewares/upload.middleware'
 
 mongoose.connect = mongoose.connect(MONGO_URI)
 
@@ -34,6 +35,7 @@ app.use(errorHandler.bodyParser)
 
 // API Routes
 app.use('/api', routes)
+app.get('/downloads/:filename', download)
 
 // Error Middleware
 app.use(errorHandler.genericErrorHandler)
