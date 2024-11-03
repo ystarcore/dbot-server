@@ -13,6 +13,8 @@ const run = async () => {
       .on('error', (error) => console.log('DATABASE STATE', error))
 
     await proseedLeads()
+
+    console.log("Done")
   } catch (err) {
     console.error('DATABASE STATE', err)
   } finally {

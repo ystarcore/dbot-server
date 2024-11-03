@@ -96,7 +96,7 @@ export async function proseedLeads() {
         const { num, location, url, jobTitle, company } = lead
         if (!clientNumRow.includes(num)) return
 
-        // if (!jobTitles.includes(jobTitle?.toLowerCase().trim())) return
+        if (!jobTitles.includes(jobTitle?.toLowerCase().trim())) return
 
         if (hist.includes(url)) return
 
@@ -106,7 +106,6 @@ export async function proseedLeads() {
           passLocation =
             ukLocation.some((tmpLocation) => location.toLowerCase().includes(tmpLocation.toLowerCase())) &&
             !usLocation.some((tmpLocation) => location.toLowerCase().includes(tmpLocation.toLowerCase()))
-          console.log('@@@@@@@@@@@@@@@@', passLocation)
         } else if (checkLocation === 'US') {
           passLocation =
             usLocation.some((tmpLocation) => location.toLowerCase().includes(tmpLocation.toLowerCase())) &&
