@@ -4,8 +4,9 @@ import path from 'path'
 import Lead from './leads.model'
 
 import { getAllTeamsWithClient } from '../teams/teams.service'
-import { getAllHists } from '../hists/hists.service'
+import { addHist, getAllHists } from '../hists/hists.service'
 import { getLocationsArr } from '../locations/locations.service'
+import { addScrape } from '../scrapes/scrapes.service'
 
 /**
  * Get all lead.
@@ -55,7 +56,13 @@ export async function proseedLeads() {
 
     const hist = rawHist.map(({ url }) => url.trim())
 
+    let count = 0
+
+    console.log(`proseeding... 0/${teams.length}`)
+
     for (const item of teams) {
+      count++
+      
       const { name, filename } = item
 
       const filePath = path.join(clientsDir, filename)
@@ -103,13 +110,9 @@ export async function proseedLeads() {
         let passLocation = false
 
         if (checkLocation === 'UK') {
-          passLocation =
-            ukLocation.some((tmpLocation) => location.toLowerCase().includes(tmpLocation.toLowerCase())) &&
-            !usLocation.some((tmpLocation) => location.toLowerCase().includes(tmpLocation.toLowerCase()))
+          passLocation = ukLocation.some((tmpLocation) => location.toLowerCase().includes(tmpLocation.toLowerCase()))
         } else if (checkLocation === 'US') {
-          passLocation =
-            usLocation.some((tmpLocation) => location.toLowerCase().includes(tmpLocation.toLowerCase())) &&
-            !ukLocation.some((tmpLocation) => location.toLowerCase().includes(tmpLocation.toLowerCase()))
+          passLocation = usLocation.some((tmpLocation) => location.toLowerCase().includes(tmpLocation.toLowerCase()))
         } else {
           passLocation = [...usLocation, ...ukLocation].some((tmpLocation) =>
             location.toLowerCase().includes(tmpLocation.toLowerCase())
@@ -121,10 +124,30 @@ export async function proseedLeads() {
         worksheet.addRow({ company, title: jobTitle, location, url })
       })
 
-      const newFilePath = path.join(clientsDir, `new-${name}.xlsx`)
+      const fileKey = `${name}-${Date.now()}.xlsx`
+
+      const newFilePath = path.join(clientsDir, fileKey)
 
       await workbook.xlsx.writeFile(newFilePath)
+
+      const scrapedAt = leads[0].createdAt
+
+      await addScrape({ filename: fileKey, name, client: filename, scrapedAt })
+
+      console.log(`proseeding... ${count}/${teams.length}`)
     }
+
+    for (const lead of leads) {
+      const { num, location, url, jobTitle, company, createdAt } = lead
+
+      await addHist({ num, location, url, jobTitle, company, scrapedAt: createdAt })
+    }
+
+    console.log(`proseeding... Updated history successfully`)
+
+    await Lead.deleteMany({})
+
+    console.log(`proseeding... Cleared dataset successfully`)
   } catch (err) {
     throw err
   }

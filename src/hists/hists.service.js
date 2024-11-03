@@ -28,9 +28,7 @@ export function getHists(query) {
  * @returns {Promise}
  */
 export function addHist(histData) {
-  const hist = new Hist(histData)
-
-  return hist.save()
+  return Hist.updateOne({ url: histData.url }, histData, { upsert: true })
 }
 
 /**
@@ -73,7 +71,7 @@ export async function importHistoryData() {
 
         Object.keys(dataObject).forEach((key) => {
           for (let data of dataObject[key]) {
-            const promise = Hist.updateOne({ url: data }, { url: data, scrapedAt: '2024-11-01' }, { upsert: true })
+            const promise = Hist.updateOne({ url: data }, { url: data }, { upsert: true })
               .then(() => console.log(`Created: ${data}`))
               .catch((error) => console.error(`Error updating data with URL: ${data}`, error))
 

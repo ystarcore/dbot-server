@@ -22,7 +22,7 @@ export function fetchClient(req, res, next) {
 
   const filePath = path.resolve('uploads', filename)
 
-  const fileName = `${name}-${moment(createdAt).format('YYYYMMDDHHmm')}.xlsx`
+  const fileName = `${name}-${moment(createdAt).format('YYYYMMDDHHmm')}.clients.xlsx`
 
   try {
     if (!fs.existsSync(filePath)) return Boom.notFound('File not found')
