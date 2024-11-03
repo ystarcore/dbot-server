@@ -5,6 +5,7 @@ import express from 'express'
 import bodyParser from 'body-parser'
 import compression from 'compression'
 import mongoose from 'mongoose'
+import path from 'path'
 
 import routes from './app/router'
 import * as errorHandler from './middlewares/error.middleware'
@@ -36,6 +37,13 @@ app.use(errorHandler.bodyParser)
 // API Routes
 app.use('/api', routes)
 app.get('/downloads/:filename', download)
+
+// Serve static files from the 'public/dist' directory
+app.use(express.static(path.join(__dirname, '../public/dist')))
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/dist/index.html'))
+})
 
 // Error Middleware
 app.use(errorHandler.genericErrorHandler)
