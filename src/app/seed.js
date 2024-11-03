@@ -2,6 +2,7 @@ import mongoose from 'mongoose'
 
 import { MONGO_URI } from '../app/config.js'
 import { seedUsers } from './../users/users.seed'
+import { seedLocations } from '../locations/locations.seed.js'
 
 mongoose.connect = mongoose.connect(MONGO_URI)
 
@@ -13,6 +14,8 @@ mongoose.connection
 const run = async () => {
   try {
     await seedUsers()
+
+    await seedLocations()
   } catch (err) {
     console.log(err)
   } finally {
