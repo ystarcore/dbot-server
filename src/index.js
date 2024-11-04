@@ -27,8 +27,14 @@ const app = express()
 app.set('port', APP_PORT)
 app.set('host', APP_HOST)
 
+app.use(helmet({
+  contentSecurityPolicy: false,
+  hsts: true,
+}));
+
+
 app.use(cors())
-app.use(helmet())
+// app.use(helmet())
 app.use(compression())
 app.use(morgan('tiny'))
 app.use(bodyParser.json())
