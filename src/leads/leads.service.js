@@ -160,15 +160,24 @@ export async function proseedLeads() {
  */
 export async function clearLeads() {
   try {
+    console.log(`Processing... Preparing`)
+
     const leads = await getAllLeads()
 
+    let count = 0
+    const len = leads.length
+
     for (const lead of leads) {
+      process.stdout.write(`Processing... ${count}/${len} ${Math.round((count / len) * 10000) / 100}%\r`)
+
       const { num, location, url, jobTitle, company, createdAt } = lead
 
       await addHist({ num, location, url, jobTitle, company, scrapedAt: createdAt })
+
+      count++
     }
 
-    console.log(`proseeding... Updated history successfully`)
+    console.log('Processing... Updated the history.')
 
     await Lead.deleteMany({})
 
