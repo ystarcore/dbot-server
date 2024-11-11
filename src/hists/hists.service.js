@@ -61,7 +61,6 @@ const jsonDirectory = path.resolve('histories')
 export async function importHistoryData() {
   try {
     const files = fs.readdirSync(jsonDirectory)
-    const updatePromises = []
 
     for (const file of files) {
       if (path.extname(file) === '.json') {
@@ -69,19 +68,28 @@ export async function importHistoryData() {
         const rawData = fs.readFileSync(filePath, 'utf8')
         const dataObject = JSON.parse(rawData)
 
+        const bulkOperations = []
+
         Object.keys(dataObject).forEach((key) => {
           for (let data of dataObject[key]) {
-            const promise = Hist.updateOne({ url: data }, { url: data }, { upsert: true })
-              .then(() => console.log(`Created: ${data}`))
-              .catch((error) => console.error(`Error updating data with URL: ${data}`, error))
-
-            updatePromises.push(promise)
+            bulkOperations.push({
+              updateOne: {
+                filter: { url: data.toString() },
+                update: { $set: { url: data.toString() } },
+                upsert: true
+              }
+            })
           }
         })
+
+        if (bulkOperations.length > 0) {
+          await Hist.bulkWrite(bulkOperations)
+            .then(() => console.log(`Bulk write completed for file: ${file}`))
+            .catch((error) => console.error(`Error performing bulk write operation for file: ${file}`, error))
+        }
       }
     }
 
-    await Promise.all(updatePromises)
     console.log('Import completed successfully.')
   } catch (error) {
     console.error('Error importing history data:', error)
