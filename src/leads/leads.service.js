@@ -62,7 +62,7 @@ export async function proseedLeads() {
 
     for (const item of teams) {
       count++
-      
+
       const { name, filename } = item
 
       const filePath = path.join(clientsDir, filename)
@@ -136,6 +136,31 @@ export async function proseedLeads() {
 
       console.log(`proseeding... ${count}/${teams.length}`)
     }
+
+    // for (const lead of leads) {
+    //   const { num, location, url, jobTitle, company, createdAt } = lead
+
+    //   await addHist({ num, location, url, jobTitle, company, scrapedAt: createdAt })
+    // }
+
+    // console.log(`proseeding... Updated history successfully`)
+
+    // await Lead.deleteMany({})
+
+    // console.log(`proseeding... Cleared dataset successfully`)
+  } catch (err) {
+    throw err
+  }
+}
+
+/**
+ * Clear all lead.
+ *
+ * @returns {Promise}
+ */
+export async function clearLeads() {
+  try {
+    const leads = await getAllLeads()
 
     for (const lead of leads) {
       const { num, location, url, jobTitle, company, createdAt } = lead

@@ -9,7 +9,8 @@
     "dev": "nodemon --watch .env --watch src --exec babel-node src --source-maps",
     "seed": "babel-node src/app/seed.js",
     "history": "babel-node src/utils/hist.js",
-    "proseed": "babel-node src/utils/proseed.js"
+    "proseed": "babel-node src/utils/proseed.js",
+    "clear": "babel-node src/utils/clear.js"
   },
   "author": "",
   "license": "ISC",
