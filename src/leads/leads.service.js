@@ -85,7 +85,6 @@ export async function proseedLeads() {
         const jobTitle = row.getCell('E').value
 
         if (num) if (isNeed === 'yes') clientNumRow.push(+num)
-        if (jobTitle) jobTitles.push(jobTitle)
         if (jobTitle) jobTitles.push(jobTitle.toString().toLowerCase().trim())
         if (rowNumber === 2) checkLocation = row.getCell('G').value
       })
@@ -101,9 +100,10 @@ export async function proseedLeads() {
 
       leads.map((lead) => {
         const { num, location, url, jobTitle, company } = lead
-        if (!clientNumRow.includes(num)) return
+        if (!clientNumRow.includes(+num)) return
 
-        if (!jobTitles.includes(jobTitle?.toLowerCase().trim())) return
+        let flag = jobTitles.some((tmp) => jobTitle.trim().toLowerCase().includes(tmp))
+        if (!flag) return
 
         if (hist.includes(url)) return
 
