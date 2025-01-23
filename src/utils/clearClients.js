@@ -76,7 +76,7 @@ const run = async () => {
       })
 
       rawData.forEach((item) => {
-        teamWorksheet.addRow([+item.A, item.B, item.C, oldData[`${item.A}`]?.D || ''])
+        teamWorksheet.addRow([+item.A, item.B, item.C, oldData[`${item.A}`]?.D || item.D])
       })
 
       jobTitles.forEach((title, index) => {
