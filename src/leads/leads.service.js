@@ -90,11 +90,13 @@ export async function proseedLeads() {
       })
 
       const workbook = new ExcelJS.Workbook()
+
       const worksheet = workbook.addWorksheet('Sheet1')
+
       worksheet.columns = [
-        { header: 'Company', key: 'company', width: 100 },
-        { header: 'Job Title', key: 'title', width: 100 },
-        { header: 'Location', key: 'location', width: 100 },
+        { header: 'Company', key: 'company', width: 40 },
+        { header: 'Job Title', key: 'title', width: 40 },
+        { header: 'Location', key: 'location', width: 40 },
         { header: 'Link', key: 'url', width: 400 }
       ]
 
@@ -102,22 +104,28 @@ export async function proseedLeads() {
         const { num, location, url, jobTitle, company } = lead
         if (!clientNumRow.includes(+num)) return
 
-        let flag = jobTitles.some((tmp) => jobTitle.trim().toLowerCase().includes(tmp))
+        let flag = false
+
+        if (jobTitle && jobTitle.toString().trim().toLowerCase()) {
+          flag = jobTitles.some((tmp) => jobTitle.toString().trim().toLowerCase().includes(tmp))
+        }
+
         if (!flag) return
 
         if (hist.includes(url)) return
 
         let passLocation = false
 
-        if (checkLocation === 'UK') {
-          passLocation = ukLocation.some((tmpLocation) => location.toLowerCase().includes(tmpLocation.toLowerCase()))
-        } else if (checkLocation === 'US') {
-          passLocation = usLocation.some((tmpLocation) => location.toLowerCase().includes(tmpLocation.toLowerCase()))
-        } else {
-          passLocation = [...usLocation, ...ukLocation].some((tmpLocation) =>
-            location.toLowerCase().includes(tmpLocation.toLowerCase())
-          )
-        }
+        if (location)
+          if (checkLocation === 'UK') {
+            passLocation = ukLocation.some((tmpLocation) => location.toLowerCase().includes(tmpLocation.toLowerCase()))
+          } else if (checkLocation === 'US') {
+            passLocation = usLocation.some((tmpLocation) => location.toLowerCase().includes(tmpLocation.toLowerCase()))
+          } else {
+            passLocation = [...usLocation, ...ukLocation].some((tmpLocation) =>
+              location.toLowerCase().includes(tmpLocation.toLowerCase())
+            )
+          }
 
         if (!passLocation) return
 
